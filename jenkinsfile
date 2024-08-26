@@ -25,5 +25,14 @@ pipeline {
                 sh 'trivy fs . > trivyfs.txt'
             }
         }
+        stage('Dependency Check') {
+            steps {
+                // Run OWASP Dependency-Check
+                dependencyCheck additionalArguments: '--format HTML', 
+                                format: 'HTML', 
+                                odcInstallation: 'OWASP Dependency-Check',
+                                outputDirectory: 'dependency-check-report'
+            }
+        }
     }
 }
