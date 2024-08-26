@@ -7,5 +7,10 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/mohansourcecode/go1.git'
             }
         }
+        stage("Perform Go Build") {
+            steps {
+                sh 'go build -o myapp'
+            }
+        }
     }
 }
