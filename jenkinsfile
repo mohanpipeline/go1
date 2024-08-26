@@ -1,0 +1,67 @@
+pipeline {
+    agent any
+
+    stages {
+        stage("Git Clone") {
+            steps {
+                git branch: 'main', url: 'https://github.com/mohansourcecode/go-project.git'
+            }
+        }
+
+        stage("Print All Files") {
+            steps {
+                sh 'ls -l'
+            }
+        }
+
+        stage("Perform Go Build") {
+            steps {
+                sh 'go build -o myapp'
+            }
+        }
+
+        stage("Perform Go Test") {
+            steps {
+                sh 'go test -v ./...'
+            }
+        }
+
+        stage("Display Files") {
+            steps {
+                sh 'ls -l'
+            }
+        }
+
+        stage("Perform Sonar-Scanner") {
+            steps {
+                sh 'sonar-scanner'
+            }
+        }
+
+        stage("Perform Trivy Scan on Filesystem") {
+            steps {
+                sh 'trivy fs . > trivyfs.txt'
+            }
+        }
+
+        stage("Display Files After Trivy Scan") {
+            steps {
+                sh 'ls -l'
+            }
+        }
+
+        stage("Build Docker Image") {
+            steps {
+                sh 'docker system prune -f'
+                sh 'docker container prune -f'
+                sh 'docker build -t goapp:1.0 .'
+            }
+        }
+
+        stage("Perform Trivy Image Scan") {
+            steps {
+                sh 'trivy image goapp:1.0 > trivyimage.txt'
+            }
+        }
+    }
+}
