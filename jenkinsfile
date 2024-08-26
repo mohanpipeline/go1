@@ -20,5 +20,10 @@ pipeline {
                 sh 'ls -l'
             }
         }
+        stage("performign the trivy scan"){
+            steps{
+                sh 'trivy fs . > trivyfs.txt'
+            }
+        }
     }
 }
